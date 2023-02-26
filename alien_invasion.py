@@ -2,7 +2,12 @@ import sys
 import pygame
 
 from settings import Settings
+
 from ship import Ship
+
+import game_functions as gf
+
+from pygame.sprite import Group
 
 def run_game():
     # Initialize the background and run the pygame
@@ -26,19 +31,23 @@ def run_game():
     # bg_color = (230,230,230)
 
     # Create a ship
-    ship = Ship(screen)
+    ship = Ship(ai_settings,screen)
+    
+    # Group for bullets generated
+    bullets = Group()
 
     # Loop to start game
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
+        # Check keyboard event, defined in game_functions
+        gf.check_events(ai_settings, screen, ship, bullets)
         
-        screen.fill(ai_settings.bg_color)
-        ship.blitme()
+        # Update the position of the ship
+        ship.update()
         
-        # Show the screen
-        pygame.display.flip()
+        gf.update_bullets(bullets)
+            
+        # A function defined in game_functions.py to draw a new screen and show it
+        gf.update_screen(ai_settings, screen, ship, bullets)
         
 
 
