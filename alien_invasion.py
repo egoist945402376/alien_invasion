@@ -9,6 +9,8 @@ import game_functions as gf
 
 from pygame.sprite import Group
 
+from alien import Alien
+
 def run_game():
     # Initialize the background and run the pygame
     pygame.init()
@@ -36,6 +38,11 @@ def run_game():
     # Group for bullets generated
     bullets = Group()
 
+    # A group of aliens
+    aliens = Group()
+    
+    gf.create_fleet(ai_settings,screen,aliens)
+    
     # Loop to start game
     while True:
         # Check keyboard event, defined in game_functions
@@ -47,7 +54,7 @@ def run_game():
         gf.update_bullets(bullets)
             
         # A function defined in game_functions.py to draw a new screen and show it
-        gf.update_screen(ai_settings, screen, ship, bullets)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
         
 
 
