@@ -33,15 +33,19 @@ def run_game():
     # bg_color = (230,230,230)
 
     # Create a ship
-    ship = Ship(ai_settings,screen)
+    ship = Ship(ai_settings, screen)
     
     # Group for bullets generated
     bullets = Group()
 
     # A group of aliens
     aliens = Group()
+
+    stars = Group()
+
+    gf.generate_star(ai_settings, screen, stars)
     
-    gf.create_fleet(ai_settings,screen,aliens)
+    gf.create_fleet(ai_settings, screen, ship, aliens)
     
     # Loop to start game
     while True:
@@ -54,7 +58,7 @@ def run_game():
         gf.update_bullets(bullets)
             
         # A function defined in game_functions.py to draw a new screen and show it
-        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets, stars)
         
 
 

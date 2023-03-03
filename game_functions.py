@@ -2,6 +2,7 @@ import sys
 import pygame
 from bullet import Bullet
 from alien import Alien
+from star import Star
 
 def check_events(ai_settings, screen, ship, bullets):
     # Quit the game
@@ -19,9 +20,11 @@ def check_events(ai_settings, screen, ship, bullets):
             check_keyup_events(event, ship)
             
             
-def update_screen(ai_settings, screen, ship, aliens, bullets):
+def update_screen(ai_settings, screen, ship, aliens, bullets, stars):
     screen.fill(ai_settings.bg_color)
-    
+
+    for star in stars:
+        star.blitme()
     # bullets.sprites return a list containing all bullets.
     for bullet in bullets.sprites():
         bullet.draw_bullet()
@@ -67,17 +70,31 @@ def get_number_aliens(ai_settings, alien_width):
     number_aliens_x = int(available_space_x / (2 * alien_width))
     return number_aliens_x
 
-def create_alien(ai_settings, screen, aliens, alien_number):
+def get_number_rows(ai_settings, ship_height, alien_height):
+    available_space_y = (ai_settings.screen_height - 3*alien_height - ship_height)
+    number_rows = int(available_space_y / (2 * alien_height))
+    return number_rows
+
+
+def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     alien = Alien(ai_settings, screen)
     alien_width = alien.rect.width
     alien.x = alien_width + 2 * alien_width * alien_number
     alien.rect.x = alien.x
+    alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
     aliens.add(alien)
 
-def create_fleet(ai_settings, screen, aliens):
+def create_fleet(ai_settings, screen, ship, aliens):
     alien = Alien(ai_settings, screen)
     number_aliens_x = get_number_aliens(ai_settings, alien.rect.width)
-    for alien_number in range(number_aliens_x):
-        create_alien(ai_settings, screen, aliens, alien_number)
+    number_rows = get_number_rows(ai_settings, ship.rect.height, alien.rect.height)
+    for row_number in range(number_rows):
+        for alien_number in range(number_aliens_x):
+            create_alien(ai_settings, screen, aliens, alien_number, row_number)
     
-    
+
+def generate_star(ai_settings, screen, stars):
+    for i in range(10):
+        new_star = Star(ai_settings, screen)
+        stars.add(new_star)
+

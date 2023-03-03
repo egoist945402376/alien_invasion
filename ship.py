@@ -2,7 +2,7 @@ import pygame
 
 class Ship():
     
-    def __init__(self,ai_settings, screen):
+    def __init__(self, ai_settings, screen):
         #screen : initial position of the ship in the screen
         # Initialize the position in the screen
         self.screen = screen
