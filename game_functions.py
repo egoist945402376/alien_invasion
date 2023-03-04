@@ -3,6 +3,7 @@ import pygame
 from bullet import Bullet
 from alien import Alien
 from star import Star
+from raindrop import Raindrop
 
 def check_events(ai_settings, screen, ship, bullets):
     # Quit the game
@@ -20,8 +21,9 @@ def check_events(ai_settings, screen, ship, bullets):
             check_keyup_events(event, ship)
             
             
-def update_screen(ai_settings, screen, ship, aliens, bullets, stars):
+def update_screen(ai_settings, screen, ship, aliens, bullets, stars, raindrops):
     screen.fill(ai_settings.bg_color)
+    raindrops.draw(screen)
 
     for star in stars:
         star.blitme()
@@ -31,7 +33,8 @@ def update_screen(ai_settings, screen, ship, aliens, bullets, stars):
         
     ship.blitme()
     aliens.draw(screen)
-    
+
+
     pygame.display.flip()
     
     
@@ -98,3 +101,48 @@ def generate_star(ai_settings, screen, stars):
         new_star = Star(ai_settings, screen)
         stars.add(new_star)
 
+def check_fleet_edges(ai_settings, aliens):
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+
+def change_fleet_direction(ai_settings, aliens):
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction *= -1
+
+
+def update_aliens(ai_settings, aliens):
+    check_fleet_edges(ai_settings,aliens)
+    aliens.update()
+
+def get_number_raindrops(ai_settings, raindrop_width):
+    available_raindrop_x = ai_settings.screen_width - 2 * raindrop_width
+    raindrops_number = int(available_raindrop_x / raindrop_width)
+    return raindrops_number
+
+def get_number_raindrops_row(ai_settings, raindrop_height):
+    available_y = ai_settings.screen_height
+    raindrops_number_rows = int(available_y / raindrop_height)
+    return raindrops_number_rows
+
+def create_raindrop(ai_settings, screen, raindrops, raindrop_number, raindrop_row):
+    raindrop = Raindrop(ai_settings, screen)
+    raindrop_width = raindrop.rect.width
+    raindrop_height = raindrop.rect.height
+    raindrop.x = raindrop_width + 2 * raindrop_number * raindrop_width
+    raindrop.y = raindrop_height + 2 * raindrop_row * raindrop_height
+    raindrop.rect.x = raindrop.x
+    raindrop.rect.y = raindrop.y
+    raindrops.add(raindrop)
+
+def create_raindrops(ai_settings, screen, raindrops):
+    raindrop = Raindrop(ai_settings, screen)
+    r_w = raindrop.rect.width
+    r_h = raindrop.rect.height
+    number_x = get_number_raindrops(ai_settings, r_w)
+    number_y = get_number_raindrops_row(ai_settings, r_h)
+    for row_number in range(number_y):
+        for number_column in range(number_x):
+            create_raindrop(ai_settings, screen, raindrops, number_column, row_number)

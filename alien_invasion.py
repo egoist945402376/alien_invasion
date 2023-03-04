@@ -9,6 +9,8 @@ import game_functions as gf
 
 from pygame.sprite import Group
 
+from raindrop import Raindrop
+
 from alien import Alien
 
 def run_game():
@@ -46,6 +48,10 @@ def run_game():
     gf.generate_star(ai_settings, screen, stars)
     
     gf.create_fleet(ai_settings, screen, ship, aliens)
+
+    raindrops = Group()
+
+    gf.create_raindrops(ai_settings, screen, raindrops)
     
     # Loop to start game
     while True:
@@ -54,11 +60,11 @@ def run_game():
         
         # Update the position of the ship
         ship.update()
-        
+        gf.update_aliens(ai_settings, aliens)
         gf.update_bullets(bullets)
             
         # A function defined in game_functions.py to draw a new screen and show it
-        gf.update_screen(ai_settings, screen, ship, aliens, bullets, stars)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets, stars, raindrops)
         
 
 
